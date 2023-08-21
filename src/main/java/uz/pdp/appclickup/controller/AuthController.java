@@ -12,7 +12,7 @@ import uz.pdp.appclickup.payload.ApiResponse;
 import uz.pdp.appclickup.payload.LoginDTO;
 import uz.pdp.appclickup.payload.RegisterDTO;
 import uz.pdp.appclickup.security.JwtProvider;
-import uz.pdp.appclickup.service.AuthService;
+import uz.pdp.appclickup.serviceImpl.AuthService;
 
 import javax.validation.Valid;
 

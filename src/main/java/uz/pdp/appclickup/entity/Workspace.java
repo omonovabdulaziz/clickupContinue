@@ -11,22 +11,22 @@ import javax.persistence.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "owner_id"})})
-public class Workspace extends AbsLongEntity {
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Entity
+    @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "owner_id"})})
+    public class Workspace extends AbsLongEntity {
 
-    @Column(nullable = false)
-    private String name;
+        @Column(nullable = false)
+        private String name;
 
-    @Column(nullable = false)
-    private String color;
+        @Column(nullable = false)
+        private String color;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private User owner;
+        @ManyToOne(fetch = FetchType.LAZY, optional = false)
+        private User owner;
 
-    @Column(nullable = false)
+        @Column(nullable = false)
     private String initialLetter;
 
     @ManyToOne(fetch = FetchType.LAZY)

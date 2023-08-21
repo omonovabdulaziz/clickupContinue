@@ -1,4 +1,4 @@
-package uz.pdp.appclickup.service;
+package uz.pdp.appclickup.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +12,7 @@ import uz.pdp.appclickup.entity.enums.WorkspacePermissionName;
 import uz.pdp.appclickup.entity.enums.WorkspaceRoleName;
 import uz.pdp.appclickup.payload.*;
 import uz.pdp.appclickup.repository.*;
+import uz.pdp.appclickup.service.WorkspaceService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

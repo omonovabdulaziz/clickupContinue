@@ -3,19 +3,17 @@ package uz.pdp.appclickup.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.pdp.appclickup.entity.User;
-import uz.pdp.appclickup.entity.Workspace;
-import uz.pdp.appclickup.entity.WorkspaceUser;
-import uz.pdp.appclickup.payload.ApiResponse;
-import uz.pdp.appclickup.payload.MemberDTO;
-import uz.pdp.appclickup.payload.WorkspaceDTO;
+import uz.pdp.appclickup.entity.*;
+import uz.pdp.appclickup.payload.*;
 import uz.pdp.appclickup.security.CurrentUser;
 import uz.pdp.appclickup.service.WorkspaceService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -83,13 +81,26 @@ public class WorkspaceController {
     }
 
     @GetMapping("/getMember/{id}")
-    public Page<WorkspaceUser> getMemberAndMehmon(@PathVariable Long id , @RequestParam int page , @RequestParam int size) {
-        return workspaceService.getMemberAndMehmon(id , page , size);
+    public Page<WorkspaceUser> getMemberAndMehmon(@PathVariable Long id, @RequestParam int page, @RequestParam int size) {
+        return workspaceService.getMemberAndMehmon(id, page, size);
     }
 
     @GetMapping("/workspaceList/{id}")
-    public List<Workspace> getWorkspaceList(@PathVariable UUID id){
+    public List<Workspace> getWorkspaceList(@PathVariable UUID id) {
         return workspaceService.getWorkspaceList(id);
     }
+
+    @PostMapping("/addRoleToWorkspace")
+    public ResponseEntity<?> addRoleToWorkpace(@RequestBody WorkspaceRoleDTO workspaceRoleDTO) {
+        ApiResponse apiResponse = workspaceService.addRoleToWorkpace(workspaceRoleDTO);
+        return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
+    }
+
+    @PostMapping("/addWorkspacePermission")
+    public ResponseEntity<?> addWorkspacePermission(WorkspacePermissionDTO workspacePermissionDTO) {
+        ApiResponse apiResponse = workspaceService.addWorkspacePermission(workspacePermissionDTO);
+        return ResponseEntity.status(apiResponse.isSuccess()?HttpStatus.ACCEPTED:HttpStatus.CONFLICT).body(apiResponse);
+    }
+
 
 }

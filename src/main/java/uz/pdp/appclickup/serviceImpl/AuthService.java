@@ -1,4 +1,4 @@
-package uz.pdp.appclickup.service;
+package uz.pdp.appclickup.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

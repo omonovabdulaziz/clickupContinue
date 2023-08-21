@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import uz.pdp.appclickup.security.JwtFilter;
-import uz.pdp.appclickup.service.AuthService;
+import uz.pdp.appclickup.serviceImpl.AuthService;
 
 import java.util.Properties;
 

@@ -28,8 +28,8 @@ public interface WorkspaceService {
 
     List<Workspace> getWorkspaceList(UUID userid);
 
-    ApiResponse addRoleToWorkpace(WorkspaceRoleDTO workspaceRoleDTO);
     ApiResponse addWorkspacePermission(WorkspacePermissionDTO workspacePermissionDTO);
 
+    ApiResponse addRoleToWorkpace(WorkspaceRoleDTO workspaceRoleDTO);
 
 }
