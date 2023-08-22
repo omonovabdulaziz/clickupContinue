@@ -16,4 +16,6 @@ public class AssignUserDTO {
     @Enumerated(EnumType.STRING)
     @NotNull
     private AssignType assignType;
+    @NotNull
+    private Long taskId;
 }

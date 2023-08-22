@@ -36,6 +36,7 @@ public class Task extends AbsLongEntity {
     private Timestamp startTimeHas;
     private Date dueDate;
     private Timestamp dueTimeHas;
-
+    @ManyToOne
+    private User assignUser;
 
 }

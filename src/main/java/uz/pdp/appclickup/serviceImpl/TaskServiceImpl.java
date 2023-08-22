@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.pdp.appclickup.entity.Status;
 import uz.pdp.appclickup.entity.Task;
+import uz.pdp.appclickup.entity.User;
 import uz.pdp.appclickup.entity.enums.AssignType;
 import uz.pdp.appclickup.payload.ApiResponse;
 import uz.pdp.appclickup.payload.AssignUserDTO;
 import uz.pdp.appclickup.payload.TaskDTO;
 import uz.pdp.appclickup.repository.StatusRepository;
 import uz.pdp.appclickup.repository.TaskRepository;
+import uz.pdp.appclickup.repository.UserRepository;
 import uz.pdp.appclickup.service.TaskService;
 
 import java.sql.Date;
@@ -22,6 +24,8 @@ public class TaskServiceImpl implements TaskService {
     TaskRepository taskRepository;
     @Autowired
     StatusRepository statusRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public ApiResponse addTask(TaskDTO taskDTO) {
@@ -73,11 +77,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public ApiResponse assignOrDisAssignUserToTask(AssignUserDTO assignUserDTO) {
         AssignType assignType = assignUserDTO.getAssignType();
+        Optional<User> optionalUser = userRepository.findById(assignUserDTO.getUserId());
+        if (!optionalUser.isPresent()) return new ApiResponse("Bunday id li user mavjud emas", false);
+        Optional<Task> optionalTask = taskRepository.findById(assignUserDTO.getTaskId());
+        if (!optionalTask.isPresent())
+            return new ApiResponse("Ushbu task Topilmadi", false);
+        Task task = optionalTask.get();
         if (assignType.equals(AssignType.ASSIGN_ABLE)) {
-
-        }else if (assignType.equals(AssignType.ASSIGN_DISABLE)){
-
+            task.setAssignUser(optionalUser.get());
+            taskRepository.save(task);
+            return new ApiResponse("User tasdiqlandi ushbu task uchun", true);
+        } else if (assignType.equals(AssignType.ASSIGN_DISABLE)) {
+            task.setAssignUser(null);
+            taskRepository.save(task);
+            return new ApiResponse("User o'chirib tashlandi ushbu task uchun ", false);
         }
-        return new ApiResponse("Bunday assignType mavjud emas" , false);
+        return new ApiResponse("Bunday assignType mavjud emas", false);
     }
 }
