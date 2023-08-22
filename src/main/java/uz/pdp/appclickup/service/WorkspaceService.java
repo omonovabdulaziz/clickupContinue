@@ -24,12 +24,12 @@ public interface WorkspaceService {
 
     ApiResponse joinToWorkspace(Long id, User user);
 
-    Page<WorkspaceUser> getMemberAndMehmon(Long id, int page, int size);
+    List<MemberDTO> getMemberAndMehmon(Long id);
 
-    List<Workspace> getWorkspaceList(UUID userid);
+    List<WorkspaceDTO> getMyWorkspace(User user);
 
     ApiResponse addWorkspacePermission(WorkspacePermissionDTO workspacePermissionDTO);
 
-    ApiResponse addRoleToWorkpace(WorkspaceRoleDTO workspaceRoleDTO);
+    ApiResponse addOrRemovePermissionToRole(WorkspaceRoleDTO workspaceRoleDTO);
 
 }

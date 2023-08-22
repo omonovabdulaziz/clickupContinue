@@ -11,6 +11,7 @@ import uz.pdp.appclickup.entity.enums.SystemRoleName;
 import uz.pdp.appclickup.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -34,6 +35,7 @@ public class User extends AbsUUIDEntity implements UserDetails {
 
     @OneToOne(fetch = FetchType.LAZY)
     private Attachment avatar;
+    private Timestamp lastActiveTime;
 
     private boolean enabled;
     private boolean accountNonExpired = true;

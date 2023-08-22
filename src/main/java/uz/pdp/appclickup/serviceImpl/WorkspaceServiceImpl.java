@@ -1,9 +1,6 @@
 package uz.pdp.appclickup.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import uz.pdp.appclickup.entity.*;
@@ -175,28 +172,48 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public Page<WorkspaceUser> getMemberAndMehmon(Long id, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return workspaceUserRepository.findByWorkspaceId(id, pageable);
+    public List<MemberDTO> getMemberAndMehmon(Long id) {
+        List<MemberDTO> members = new ArrayList<>();
+
+        for (WorkspaceUser workspaceUser : workspaceUserRepository.findAllByWorkspaceId(id)) {
+            members.add(mapWorkspaceUserToMemberDTO(workspaceUser));
+        }
+
+        return members;
+
     }
 
+
     @Override
-    public List<Workspace> getWorkspaceList(UUID userid) {
-        return workspaceRepository.findByOwnerId(userid);
+    public List<WorkspaceDTO> getMyWorkspace(User user) {
+        List<WorkspaceUser> allByUserId = workspaceUserRepository.findAllByUserId(user.getId());
+        List<WorkspaceDTO> workspaceDTOS = new ArrayList<>();
+        for (WorkspaceUser workspaceUser : allByUserId) {
+            WorkspaceDTO workspaceDTO = mapWorkspaceUserToWorkspaceDTO(workspaceUser);
+            workspaceDTOS.add(workspaceDTO);
+        }
+        return workspaceDTOS;
+
     }
     //role qoshish va permission qoshish
 
     @Override
-    public ApiResponse addRoleToWorkpace(WorkspaceRoleDTO workspaceRoleDTO) {
-        if (workspaceRoleRepository.existsByWorkspaceNameAndWorkspaceId(workspaceRoleDTO.getName(), workspaceRoleDTO.getWorkspaceId()))
-            return new ApiResponse("Bunday nomli role ushbu Workspacega qo'shilgan", false);
-        WorkspaceRole workspaceRole = new WorkspaceRole();
-        Optional<Workspace> optionalWorkspace = workspaceRepository.findById(workspaceRoleDTO.getWorkspaceId());
-        workspaceRole.setWorkspace(optionalWorkspace.get());
-        workspaceRole.setName(workspaceRoleDTO.getName());
-        workspaceRole.setExtendsRole(workspaceRoleDTO.getExtendsRole());
-        workspaceRoleRepository.save(workspaceRole);
-        return new ApiResponse("Yangi Role Ushbu Workspacega Qo'shildi", true);
+    public ApiResponse addOrRemovePermissionToRole(WorkspaceRoleDTO workspaceRoleDTO) {
+        WorkspaceRole workspaceRole = workspaceRoleRepository.findById(workspaceRoleDTO.getId()).orElseThrow(() -> new ResourceNotFoundException("workspaceRole"));
+        Optional<WorkspacePermission> optionalWorkspacePermission = workspacePermissionRepository.findByWorkspaceRoleIdAndPermission(workspaceRole.getId(), workspaceRoleDTO.getPermissionName().getPermission());
+        if (workspaceRoleDTO.getAddType().equals(AddType.ADD)) {
+            if (optionalWorkspacePermission.isPresent())
+                return new ApiResponse("Allaqachon qo'shilgan", false);
+
+            WorkspacePermission permission = new WorkspacePermission(workspaceRole, workspaceRoleDTO.getPermissionName().getPermission());
+            WorkspacePermission save = workspacePermissionRepository.save(permission);
+            return new ApiResponse("Qo'shildi", true);
+        } else if (workspaceRoleDTO.getAddType().equals(AddType.REMOVE)) {
+            if (!optionalWorkspacePermission.isPresent())
+                return new ApiResponse("BUnday abyekt yoq", false);
+            workspacePermissionRepository.delete(optionalWorkspacePermission.get());
+        }
+        return new ApiResponse("Bunday buyruq yoq", false);
     }
 
     @Override
@@ -207,6 +224,29 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         permission.setPermission(workspacePermissionDTO.getWorkspacePermission().getPermission());
         workspacePermissionRepository.save(permission);
         return new ApiResponse("Ushbu permission ushbu workspacedagi role uchun saqlandi", true);
+    }
+
+
+    //myMEthods
+    public MemberDTO mapWorkspaceUserToMemberDTO(WorkspaceUser workspaceUser) {
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setId(workspaceUser.getUser().getId());
+        memberDTO.setFullName(workspaceUser.getUser().getFullName());
+        memberDTO.setEmail(workspaceUser.getUser().getEmail());
+        memberDTO.setRoleName(workspaceUser.getWorkspaceRole().getName());
+        memberDTO.setLastActive(workspaceUser.getUser().getLastActiveTime());
+        return memberDTO;
+    }
+
+    public WorkspaceDTO mapWorkspaceUserToWorkspaceDTO(WorkspaceUser user) {
+        WorkspaceDTO workspaceDTO = new WorkspaceDTO();
+        workspaceDTO.setId(user.getWorkspace().getId());
+        workspaceDTO.setInitialLetter(user.getWorkspace().getInitialLetter());
+        workspaceDTO.setName(user.getWorkspace().getName());
+        workspaceDTO.setAvatarId(user.getWorkspace().getAvatar() == null ? null : user.getWorkspace().getAvatar().getId());
+        workspaceDTO.setColor(user.getWorkspace().getColor());
+        return workspaceDTO;
+
     }
 
 

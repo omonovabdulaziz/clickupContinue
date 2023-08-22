@@ -81,26 +81,26 @@ public class WorkspaceController {
     }
 
     @GetMapping("/getMember/{id}")
-    public Page<WorkspaceUser> getMemberAndMehmon(@PathVariable Long id, @RequestParam int page, @RequestParam int size) {
-        return workspaceService.getMemberAndMehmon(id, page, size);
+    public List<MemberDTO> getMemberAndMehmon(@PathVariable Long id) {
+        return workspaceService.getMemberAndMehmon(id);
     }
 
-    @GetMapping("/workspaceList/{id}")
-    public List<Workspace> getWorkspaceList(@PathVariable UUID id) {
-        return workspaceService.getWorkspaceList(id);
+    @GetMapping("/getMyWorkspace")
+    public ResponseEntity<?> getWorkspaceList(@CurrentUser User user) {
+        List<WorkspaceDTO> workspaces = workspaceService.getMyWorkspace(user);
+        return ResponseEntity.ok(workspaces);
     }
 
-    @PostMapping("/addRoleToWorkspace")
-    public ResponseEntity<?> addRoleToWorkpace(@RequestBody WorkspaceRoleDTO workspaceRoleDTO) {
-        ApiResponse apiResponse = workspaceService.addRoleToWorkpace(workspaceRoleDTO);
+    @PutMapping("/addOrRemovePermission")
+    public ResponseEntity<?> addOrRemovePermissionToRole(@RequestBody WorkspaceRoleDTO workspaceRoleDTO) {
+        ApiResponse apiResponse = workspaceService.addOrRemovePermissionToRole(workspaceRoleDTO);
         return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.OK : HttpStatus.CONFLICT).body(apiResponse);
     }
 
     @PostMapping("/addWorkspacePermission")
     public ResponseEntity<?> addWorkspacePermission(WorkspacePermissionDTO workspacePermissionDTO) {
         ApiResponse apiResponse = workspaceService.addWorkspacePermission(workspacePermissionDTO);
-        return ResponseEntity.status(apiResponse.isSuccess()?HttpStatus.ACCEPTED:HttpStatus.CONFLICT).body(apiResponse);
+        return ResponseEntity.status(apiResponse.isSuccess() ? HttpStatus.ACCEPTED : HttpStatus.CONFLICT).body(apiResponse);
     }
-
 
 }

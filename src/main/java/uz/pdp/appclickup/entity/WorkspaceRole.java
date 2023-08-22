@@ -15,6 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"workspace_id" , "name"}))
 public class WorkspaceRole extends AbsUUIDEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

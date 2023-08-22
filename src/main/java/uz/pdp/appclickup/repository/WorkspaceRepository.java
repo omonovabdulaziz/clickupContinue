@@ -14,7 +14,7 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
     boolean existsByOwnerIdAndName(UUID owner_id, String name);
 
     Workspace findByName(String name);
-    List<Workspace> findByOwnerId(UUID owner_id);
+
 
 
 
