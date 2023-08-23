@@ -14,6 +14,7 @@ import uz.pdp.appclickup.entity.template.AbsLongEntity;
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -38,5 +39,7 @@ public class Task extends AbsLongEntity {
     private Timestamp dueTimeHas;
     @ManyToOne
     private User assignUser;
+    @ManyToOne
+    private Attachment attachment;
 
 }
